@@ -54,8 +54,10 @@ namespace MyExternalCommand
 
                 if (dimension != null)
                 {
-                    double offsetInFeetX = 3;
-                    double offsetInFeetY = 1;
+                    double offsetInFeetX = 2.5;
+                    double offsetInFeetY = 1.8;
+                    double jointDimension = 0.0625;
+                    double dimTolerance = 0.0001;
 
                     XYZ offsetVector = new XYZ(offsetInFeetX, 0, offsetInFeetY);
 
@@ -65,14 +67,17 @@ namespace MyExternalCommand
 
                         foreach (DimensionSegment segment in dimension.Segments)
                         {
-                            XYZ currentTextPosition = segment.TextPosition;
-                            XYZ newTextPosition = currentTextPosition.Add(offsetVector);
-                            segment.TextPosition = newTextPosition;
+                            if(segment.Value - jointDimension <= dimTolerance)
+                            {
+                                XYZ currentTextPosition = segment.TextPosition;
+                                XYZ newTextPosition = currentTextPosition.Add(offsetVector);
+                                segment.TextPosition = newTextPosition;
+                            }
+                            else { }
                         }
 
                         trans.Commit();
 
-                        TaskDialog.Show("Shift Dimension Text", $"Dimension text positions for {dimension.Segments.Size} segments shifted.");
                     }
 
                 }
